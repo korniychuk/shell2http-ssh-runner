@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/korniychuk/shell2http-ssh-runner.svg?branch=master)](https://travis-ci.com/korniychuk/shell2http-ssh-runner)
+
 ### Using an SH file
 ```
     version: '3'
