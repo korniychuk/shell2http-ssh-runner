@@ -25,7 +25,7 @@ if [[ "${RUNNER_MODE}" == 'script-file' ]]; then
         exit 3
     fi
 
-    ssh -i "$SSH_KEY" "${SSH_USERNAME}@${SSH_SERVER}" < "$REMOTE_SCRIPT"
+    ssh -T -i "$SSH_KEY" "${SSH_USERNAME}@${SSH_SERVER}" < "$REMOTE_SCRIPT"
 
 elif [[ "${RUNNER_MODE}" == 'command' ]]; then
 
@@ -34,10 +34,9 @@ elif [[ "${RUNNER_MODE}" == 'command' ]]; then
         exit 4
     fi
 
-    ssh -i "$SSH_KEY" "${SSH_USERNAME}@${SSH_SERVER}" "$REMOTE_COMMAND"
+    ssh -T -i "$SSH_KEY" "${SSH_USERNAME}@${SSH_SERVER}" "$REMOTE_COMMAND"
 
 else
     echo "Wrong RUNNER_MODE: '${RUNNER_MODE}'" >&2
     exit 2
 fi
-

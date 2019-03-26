@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-echo Overrided sh file
+echo Custom SSH Remote Script
 echo "User: $USER"

@@ -9,9 +9,9 @@ services:
     environment:
       SSH_USERNAME: root
       SSH_SERVER: docker.korniychuk.pro
-#      REMOTE_SCRIPT_FILENAME: remote.sh
+      REMOTE_SCRIPT_FILENAME: remote.sh
     volumes:
-      - "/Users/anton/.ssh/id_rsa:/code/ssh.key:ro"
-#      - "./remote-custom.sh:/code/remote.sh"
+      - "~/.ssh/id_rsa:/code/ssh.key:ro"
+      - "./remote-custom.sh:/code/remote.sh"
 #      - "/var/run/docker.sock:/var/run/docker.sock:ro"
 #      - ".:/deploy"
