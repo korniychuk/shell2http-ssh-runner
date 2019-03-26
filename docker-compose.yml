@@ -13,5 +13,3 @@ services:
     volumes:
       - "~/.ssh/id_rsa:/code/ssh.key:ro"
       - "./remote-custom.sh:/code/remote.sh"
-#      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-#      - ".:/deploy"
