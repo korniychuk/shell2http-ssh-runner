@@ -6,7 +6,11 @@ fi
 
 if [[ ! -f ~/.ssh/known_hosts ]]; then
     ssh-keyscan -H ${SSH_SERVER} > ~/.ssh/known_hosts
-    ssh-keyscan -H $(dig +search +short ${SSH_SERVER}) >> ~/.ssh/known_hosts
+
+    IP=$(dig +search +short ${SSH_SERVER})
+    if [[ "$IP" != "" ]]; then
+        ssh-keyscan -H "${IP}" >> ~/.ssh/known_hosts
+    fi
 fi
 
 VARS=\

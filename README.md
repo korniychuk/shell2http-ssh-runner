@@ -34,5 +34,14 @@
           - "./remote-custom.sh:/code/remote.sh:ro"
 ```
 
+### Connect to the host machine
+
+```
+        environment:
+          SSH_SERVER: localhost
+        networks:
+          - host
+```
+
 ### Execute
 Go to `http://localhost:8000`
