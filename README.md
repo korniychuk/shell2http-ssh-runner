@@ -36,11 +36,20 @@
 
 ### Connect to the host machine
 
+1. Create an external network bridge
+`docker network create -d bridge --subnet 192.168.0.0/24 --gateway 192.168.0.1 docker-net`
+
 ```
+version: '3'
+...
         environment:
-          SSH_SERVER: localhost
+          SSH_SERVER: 192.168.0.1
         networks:
-          - host
+          - docker-net
+          
+networks:
+    docker-net:
+        external: true
 ```
 
 ### Execute
