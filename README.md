@@ -52,5 +52,13 @@ networks:
         external: true
 ```
 
+### Change URL or HTTP Method
+
+You can use environment variable: `TARGET_URL`, default value is `POST:/`
+
+### Setup HTTP Basic Authentication
+
+Just add the environment variable: `SH_BASIC_AUTH`. Value is `user_name:password`.
+
 ### Execute
 Go to `http://localhost:8000`

@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+set -euo pipefail
+
 if [[ ! -d ~/.ssh ]]; then
     mkdir ~/.ssh
 fi
@@ -13,6 +15,10 @@ if [[ ! -f ~/.ssh/known_hosts ]]; then
     fi
 fi
 
+if [[ -z ${TARGET_URL+x} ]]; then
+    TARGET_URL="POST:/"
+fi
+
 VARS=\
 SSH_USERNAME\
 ,SSH_SERVER\
@@ -20,4 +26,4 @@ SSH_USERNAME\
 ,REMOTE_COMMAND\
 ,RUNNER_MODE
 
-shell2http -export-vars=${VARS} / /code/ssh-runner.sh
+shell2http -export-vars=${VARS} "${TARGET_URL}" /code/ssh-runner.sh
