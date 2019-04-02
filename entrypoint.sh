@@ -1,4 +1,36 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+
+#echo "${RUNNER_COMMANDS}" | tr ';' '\n' | while IFS=: read -r url command; do
+#    echo "'${url}::${command}'"
+#done
+
+while IFS='=' read -r url command; do
+    declare safeUrl="\"${url//\"/\\\"}\""
+#    declare -r safeCommand="bash -c \"/code/ssh-runner.sh \\\"${command//\"/\\\"}\\\"\""
+    declare safeCommand="bash -c \"echo \\\"${command//\"/\\\"}\\\"\""
+#    echo "\"${url//\"/\\\"}\"" "bash -c \"/code/ssh-runner.sh \\\"${command//\"/\\\"}\\\"\""
+    echo $safeUrl :: $safeCommand
+    eval $safeCommand
+done < "/code/$RUNNER_URLS_FILE"
+
+
+#bash --version
+
+#arr=( $(echo "${RUNNER_COMMANDS}" | tr ";;" "\n") )
+##IFS=";;", read -r -a arr <<< "${RUNNER_COMMANDS}"
+##
+#echo "'${arr[0]}'"
+#echo "'${arr[1]}'"
+#echo "'${arr[2]}'"
+#RUNNER_COMMANDS="
+#    /:some;;
+#    /date:cd ~ && ls -laH && docker-compose --version;;
+#    /super: echo gen me to po so;;
+#"
+#
+#echo -e $RUNNER_COMMANDS
+
+exit
 
 set -euo pipefail
 
@@ -27,3 +59,7 @@ SSH_USERNAME\
 ,RUNNER_MODE
 
 shell2http -export-vars=${VARS} "${TARGET_URL}" /code/ssh-runner.sh
+
+#/=so":"m:e
+#/date=cd ~ && ls -laH && docker-compose --version
+#/super=echo gen me to po so
