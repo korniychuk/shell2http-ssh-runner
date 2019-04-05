@@ -13,9 +13,7 @@ RUN mkdir /code
 WORKDIR /code
 
 COPY --from=shell2http /app/shell2http /usr/local/bin/shell2http
-COPY ssh-runner.sh .
-COPY remote-hello.sh .
-COPY entrypoint.sh .
+COPY ssh-runner.sh remote-hello.sh entrypoint.sh ./
 
 
 EXPOSE 8080
