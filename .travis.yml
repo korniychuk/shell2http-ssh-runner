@@ -11,6 +11,6 @@ script:
 
 deploy:
   provider: script
-  script: bash travis-docker-push.sh
+  script: bash travis-docker-push.sh || travis_terminate 1;
   on:
     branch: master
