@@ -4,6 +4,56 @@ set -euo pipefail
 
 declare -r ROOT_DIR='/code'
 
+function joinBy {
+    local d=$1;
+    shift;
+
+    echo -n "$1";
+    shift;
+
+    printf "%s" "${@/#/$d}";
+}
+
+function inArray() {
+    local needle="${1}"; shift
+    local haystack="${@}"
+
+    for haystack; do
+        if [[ "$haystack" == "$needle" ]]; then
+            return 0;
+        fi
+    done
+
+    return 1;
+}
+
+#
+# Example:
+#
+#   if ! checkBashVersion 4 3; then
+#     echo 'Minimal supported bash version 4.3' >&2
+#     exit 1
+#   fi
+#
+function checkBashVersion() {
+    local -r MAJOR="${1:-0}"
+    local -r MINOR="${2:-0}"
+    local -r FIX="${3:-0}"
+
+    if [[ $MAJOR -le 0 ]]; then
+        echo 'checkBashVersion: Error: MAJOR version should be specified'
+    fi
+
+    if       [[ ${BASH_VERSINFO[0]} -gt ${MAJOR} ]] \
+        || ( [[ ${BASH_VERSINFO[0]} -eq ${MAJOR} ]] && [[ ${BASH_VERSINFO[1]} -gt ${MINOR} ]] ) \
+        || ( [[ ${BASH_VERSINFO[0]} -eq ${MAJOR} ]] && [[ ${BASH_VERSINFO[1]} -eq ${MINOR} ]] && [[ ${BASH_VERSINFO[2]} -ge ${FIX} ]] )
+    then
+       return 0
+    else
+       return 1
+    fi
+}
+
 function initSSH() {
     if [[ ! -d ~/.ssh ]]; then
         mkdir ~/.ssh
@@ -19,43 +69,14 @@ function initSSH() {
     fi
 }
 
-function joinBy {
-    local d=$1;
-    shift;
-
-    echo -n "$1";
-    shift;
-
-    printf "%s" "${@/#/$d}";
-}
-
 function readUrlsFile() {
     local -r FILE_NAME="${1}"
-    local -a res=()
+    local -n ARR_LINK="${2}"
+    ARR_LINK=()
 
     while IFS='=' read -r url command; do
-        safeUrl=$(echo "${url}" | sed -e 's/"/\\"/g')
-
-        escapedCommand=$(echo "${command}" | sed -e 's/"/\\\\"/g')
-        safeCommand="bash -c \\\"${escapedCommand}\\\""
-
-        res+=("\"${safeUrl}\"" "\"${safeCommand}\"")
+    ARR_LINK+=("${url}" "${command}")
     done < "${ROOT_DIR}/${FILE_NAME}"
-
-    echo "${res[@]}"
-}
-
-function inArray() {
-    local needle="${1}"; shift
-    local haystack="${@}"
-
-    for haystack; do
-        if [[ "$haystack" == "$needle" ]]; then
-            return 0;
-        fi
-    done
-
-    return 1;
 }
 
 declare -a VARS=(
@@ -80,14 +101,10 @@ fi
 initSSH
 
 if [[ "$RUNNER_MODE" == 'urls-file-with-commands' ]]; then
-    shell2http -export-vars="$(joinBy ',' "${VARS[@]}")" \
-        "POST:/" "cd ~ && ls -la" \
-        "POST:/go" 'echo "hello !" && cd ~/"Test Multiword Dir" && pwd && ls -laH' \
-        "POST:/date" "echo \"super duper\"" \
-        "POST:/super" "echo gen me to po so"
-#    shell2http -export-vars="$(joinBy ',' "${VARS[@]}")" $(readUrlsFile "${RUNNER_URLS_FILE}")
-#    eval "shell2http -export-vars=\"$(joinBy ',' "${VARS[@]}")\" $(readUrlsFile "${RUNNER_URLS_FILE}")"
-#    echo "shell2http -export-vars=\"$(joinBy ',' "${VARS[@]}")\" $(readUrlsFile "${RUNNER_URLS_FILE}")"
+    declare -a ARGS
+    readUrlsFile "${RUNNER_URLS_FILE}" ARGS
+    shell2http -export-vars="$(joinBy ',' "${VARS[@]}")" "${ARGS[@]}"
+
     exit 0
 fi
 
@@ -95,6 +112,4 @@ if [[ -z ${TARGET_URL+x} ]]; then
     TARGET_URL="POST:/"
 fi
 
-shell2http -export-vars="$(joinBy ',' "${VARS[@]}")" "${TARGET_URL}" /code/ssh-runner.sh
-
-закончил на том что какая-то ебаная борода с этим скриптом
+shell2http -export-vars="$(joinBy ',' "${VARS[@]}")" "${TARGET_URL}" "${ROOT_DIR}/ssh-runner.sh"

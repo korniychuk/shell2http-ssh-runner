@@ -9,12 +9,22 @@ services:
     environment:
       SSH_USERNAME: root
       SSH_SERVER: docker.korniychuk.pro
+
+      # URLs file with commands mode
       RUNNER_MODE: urls-file-with-commands
       RUNNER_URLS_FILE: urls.cfg
+
+      # Command mode
 #      RUNNER_MODE: command
 #      REMOTE_COMMAND: cd ~ && ls -laH && docker-compose --version
+
+      # Script file mode(default)
 #      REMOTE_SCRIPT_FILENAME: remote.sh
     volumes:
       - "~/.ssh/id_rsa:/code/ssh.key:ro"
+
+      # URLs file with commands mode
       - "./test-urls.cfg:/code/urls.cfg"
+
+      # Script file mode(default)
 #      - "./remote-custom.sh:/code/remote.sh"
