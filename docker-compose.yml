@@ -24,7 +24,7 @@ services:
       - "~/.ssh/id_rsa:/code/ssh.key:ro"
 
       # URLs file with commands mode
-      - "./test-urls.cfg:/code/urls.cfg"
+      - "./test-urls.cfg:/code/urls.cfg:ro"
 
       # Script file mode(default)
 #      - "./remote-custom.sh:/code/remote.sh"
