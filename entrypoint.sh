@@ -70,13 +70,14 @@ function initSSH() {
 }
 
 function readUrlsFile() {
-    local -r FILE_NAME="${1}"
-    local -n ARR_LINK="${2}"
-    ARR_LINK=()
+    local -r fileName="${1}"
+    local -n arrLink="${2}"
+    arrLink=()
 
     while IFS='=' read -r url command; do
-    ARR_LINK+=("${url}" "${command}")
-    done < "${ROOT_DIR}/${FILE_NAME}"
+      local safeCommand=$(echo "${command}" | base64 -- | tr -d '\n')
+      arrLink+=("${url}" "${ROOT_DIR}/ssh-runner.sh ${safeCommand}")
+    done < "${ROOT_DIR}/${fileName}"
 }
 
 declare -a VARS=(
