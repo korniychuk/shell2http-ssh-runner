@@ -8,7 +8,7 @@ services:
       - 8000:8080
     environment:
       SSH_USERNAME: root
-      SSH_SERVER: docker.korniychuk.pro
+      SSH_SERVER: korniychuk.pro
 
       # URLs file with commands mode
       RUNNER_MODE: urls-file-with-commands
